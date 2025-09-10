@@ -46,3 +46,30 @@ By default, this app uses simulated API calls in `src/utils/api.js`. Replace tho
 ## Notes
 - Keep answers concise; long text is preserved with `pre-wrap`.
 - History is local to the session and capped at 30 entries.
+
+## Troubleshooting a blank page
+If the app loads but the UI appears blank/white:
+
+1) Check the browser console (DevTools → Console):
+- If you see: `Cannot read properties of null (reading 'createRoot')`:
+  - Cause: The host page does not have a `<div id="root"></div>` for React to mount.
+  - Fix: Open the dev server root (e.g., http://localhost:3000/) instead of a wrapper like `/preview.html`, or ensure the host page contains an element with `id="root"`.
+  - The app now auto-creates a `#root` element if missing, but serving the real CRA index.html is preferred.
+
+- If you see: `useQA must be used within QAProvider`:
+  - Cause: A component is using `useQA` outside `QAProvider`.
+  - Fix: Ensure App or your route wraps children in `<QAProvider>...</QAProvider>`.
+
+- If you see 404s for `/static/js/...` or MIME-type errors:
+  - Cause: Scripts are not served from the right base path.
+  - Fix: Open the CRA dev server root path (/) and avoid custom subpaths; for production builds, configure the `homepage` field in package.json or `PUBLIC_URL`.
+
+2) Check Network tab:
+- Reload and ensure `main.*.js` returns 200. If blocked or 404, adjust the URL to the dev server root.
+
+3) Port/host issues:
+- Ensure the dev server is actually running. If port 3000 is used by another process, run on a different port:
+  - `PORT=3001 npm run start:port`
+
+4) Error UI:
+- We ship a basic Error Boundary that will display runtime render errors instead of a blank screen. Check the message shown on-screen and the console log for details.
