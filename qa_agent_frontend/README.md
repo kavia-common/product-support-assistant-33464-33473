@@ -14,15 +14,24 @@ Modern, minimalistic single-page app for a product support assistant. Users can 
   - Accent: `#ffb300`
 
 ## Quick Start
-- `npm start` – start dev server (defaults to http://localhost:3000). If port 3000 is busy, CRA may prompt to use another port.
-- `npm run start:port` – start dev server on a fixed port using the PORT env var (defaults to 3000). Use this in CI/non-interactive contexts to avoid prompts.
+- `npm start` – start dev server binding to 0.0.0.0 (all interfaces). Defaults to http://localhost:3000. If 3000 is busy, CRA may prompt to use another port.
+- `npm run start:port` – start dev server on a fixed port, binding to 0.0.0.0. Uses `PORT` (defaults to 3000). Use this in CI/non-interactive contexts to avoid prompts.
+- `npm run start:3002` – convenience alias to start on port 3002 and bind to 0.0.0.0 (useful for cloud preview setups).
 - `npm test` – run tests
 - `npm run build` – production build
 
-If you see "This site can’t be reached" on http://localhost:3000, another process may already be using port 3000. Either stop that process or run the app on a different port by setting `PORT`:
+The dev server now listens on `HOST=0.0.0.0`, so it is accessible from external hosts (e.g., via a cloud proxy URL) instead of only localhost.
 
-- bash: `PORT=3001 npm start`
+If you see "This site can’t be reached" on your preview URL or http://localhost:3000, another process may already be using port 3000. Either stop that process or run the app on a different port by setting `PORT`:
+
+- bash: `PORT=3001 npm run start:port`
 - cross-platform (uses cross-env): `npm run start:port` (set `PORT` in `.env` or inline as `PORT=3001 npm run start:port`)
+- fixed port 3002: `npm run start:3002`
+
+## Cloud/Preview environments
+- Use `npm run start:3002` if your environment expects the dev server on port 3002.
+- Otherwise use `npm run start:port` with `PORT` set appropriately.
+- All start scripts bind to `0.0.0.0`, making the app reachable at the environment’s preview URL.
 
 ## Environment
 Create a `.env` using `.env.example` if integrating with a backend:
@@ -53,7 +62,7 @@ If the app loads but the UI appears blank/white:
 1) Check the browser console (DevTools → Console):
 - If you see: `Cannot read properties of null (reading 'createRoot')`:
   - Cause: The host page does not have a `<div id="root"></div>` for React to mount.
-  - Fix: Open the dev server root (e.g., http://localhost:3000/) instead of a wrapper like `/preview.html`, or ensure the host page contains an element with `id="root"`.
+  - Fix: Open the CRA dev server root (e.g., http://localhost:3000/) instead of a wrapper like `/preview.html`, or ensure the host page contains an element with `id="root"`.
   - The app now auto-creates a `#root` element if missing, but serving the real CRA index.html is preferred.
 
 - If you see: `useQA must be used within QAProvider`:
@@ -70,6 +79,7 @@ If the app loads but the UI appears blank/white:
 3) Port/host issues:
 - Ensure the dev server is actually running. If port 3000 is used by another process, run on a different port:
   - `PORT=3001 npm run start:port`
+  - Or use the provided alias: `npm run start:3002`
 
 4) Error UI:
 - We ship a basic Error Boundary that will display runtime render errors instead of a blank screen. Check the message shown on-screen and the console log for details.
