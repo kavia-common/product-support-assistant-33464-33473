@@ -8,6 +8,16 @@ Modern, minimalistic single-page app for a product support assistant. Users can 
 - To serve locally: `npx serve -s build` (or any static server).
 - For cloud IDEs that mount at `/proxy/3002/`, serve the `build/` folder and ensure the server responds to the sub-path. Relative assets will work without additional changes.
 
+### Preview the production build via the cloud proxy
+- Build the app: `npm run build`
+- Start a static server on port 3002: `npm run start:prod`
+  - This runs `serve -s build -l 3002` and serves the optimized production build.
+- Open the preview URL under your IDE proxy path:
+  - `https://<your-cloud-host>/proxy/3002/`
+- Because `"homepage": "."` is set, all asset URLs are relative and will load correctly from `/proxy/3002/`.
+
+If you encounter a blank page or 404s for `static/js/...`, ensure you are visiting `/proxy/3002/` and not a wrapper like `/preview.html`.
+
 ## Features
 - User input for natural language questions
 - Concise answer rendering
@@ -25,6 +35,7 @@ Modern, minimalistic single-page app for a product support assistant. Users can 
 - `npm run start:3002` – convenience alias to start on port 3002 and bind to 0.0.0.0 (useful for cloud preview setups).
 - `npm test` – run tests
 - `npm run build` – production build
+- `npm run start:prod` – serve production build on port 3002 for preview via `/proxy/3002/`
 
 The dev server now listens on `HOST=0.0.0.0`, so it is accessible from external hosts (e.g., via a cloud proxy URL) instead of only localhost.
 
