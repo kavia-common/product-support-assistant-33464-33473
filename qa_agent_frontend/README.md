@@ -14,13 +14,20 @@ Modern, minimalistic single-page app for a product support assistant. Users can 
   - Accent: `#ffb300`
 
 ## Quick Start
-- `npm start` – start dev server (http://localhost:3000)
+- `npm start` – start dev server (defaults to http://localhost:3000). If port 3000 is busy, CRA may prompt to use another port.
+- `npm run start:port` – start dev server on a fixed port using the PORT env var (defaults to 3000). Use this in CI/non-interactive contexts to avoid prompts.
 - `npm test` – run tests
 - `npm run build` – production build
+
+If you see "This site can’t be reached" on http://localhost:3000, another process may already be using port 3000. Either stop that process or run the app on a different port by setting `PORT`:
+
+- bash: `PORT=3001 npm start`
+- cross-platform (uses cross-env): `npm run start:port` (set `PORT` in `.env` or inline as `PORT=3001 npm run start:port`)
 
 ## Environment
 Create a `.env` using `.env.example` if integrating with a backend:
 - `REACT_APP_API_BASE_URL` – Base URL for backend Q&A API (no trailing slash)
+- `PORT` – Optional: Port for the CRA dev server (defaults to 3000). Set this to avoid interactive prompts when 3000 is in use.
 
 By default, this app uses simulated API calls in `src/utils/api.js`. Replace those with `fetch` calls to your backend when available.
 
