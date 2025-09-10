@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo, useReducer } from 'react';
 import { askQuestionAPI, sendFeedbackAPI } from '../utils/api';
+import { v4 as uuidv4 } from 'uuid';
 
 // State shape and reducer for centralized management
 const initialState = {
@@ -20,7 +21,8 @@ function qaReducer(state, action) {
       return { ...state, loading: true, error: null, feedbackStatus: null };
     case 'ASK_SUCCESS': {
       const entry = {
-        id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
+        // Use uuid to generate stable unique IDs in all environments (browser, node, jest)
+        id: uuidv4(),
         question: action.payload.question,
         answer: action.payload.answer,
         ts: Date.now(),
