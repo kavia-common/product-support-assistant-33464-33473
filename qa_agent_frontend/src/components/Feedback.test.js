@@ -22,11 +22,14 @@ function renderAppSlice() {
 describe('Feedback', () => {
   beforeEach(() => jest.clearAllMocks());
 
-  test('feedback buttons disabled initially and note shows Optional', () => {
+  test('feedback buttons disabled initially and note shows Optional', async () => {
     renderAppSlice();
-    expect(screen.getByRole('button', { name: /thumbs up/i })).toBeDisabled();
-    expect(screen.getByRole('button', { name: /thumbs down/i })).toBeDisabled();
-    expect(screen.getByText(/optional/i)).toBeInTheDocument();
+    // Wrap feedback note assertion in waitFor to allow initial render/settle
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /thumbs up/i })).toBeDisabled();
+      expect(screen.getByRole('button', { name: /thumbs down/i })).toBeDisabled();
+      expect(screen.getByText(/optional/i)).toBeInTheDocument();
+    });
   });
 
   test('after getting an answer, feedback enabled and can send success', async () => {
@@ -47,7 +50,10 @@ describe('Feedback', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /thumbs up/i }));
     await waitFor(() => expect(sendFeedbackAPI).toHaveBeenCalledTimes(1));
-    expect(screen.getByText(/thanks for the feedback/i)).toBeInTheDocument();
+    // Wrap UI assertion for thanks message since it updates after async feedback call
+    await waitFor(() =>
+      expect(screen.getByText(/thanks for the feedback/i)).toBeInTheDocument()
+    );
   });
 
   test('feedback error path shows error note', async () => {
@@ -66,6 +72,9 @@ describe('Feedback', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /thumbs down/i }));
     await waitFor(() => expect(sendFeedbackAPI).toHaveBeenCalledTimes(1));
-    expect(screen.getByText(/could not send feedback/i)).toBeInTheDocument();
+    // Wrap UI assertion for error feedback message
+    await waitFor(() =>
+      expect(screen.getByText(/could not send feedback/i)).toBeInTheDocument()
+    );
   });
 });

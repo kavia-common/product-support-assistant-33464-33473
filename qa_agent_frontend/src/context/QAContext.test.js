@@ -43,11 +43,14 @@ describe('QAContext', () => {
     jest.clearAllMocks();
   });
 
-  test('setQuestion updates state', () => {
+  test('setQuestion updates state', async () => {
     renderWithProvider();
 
     fireEvent.click(screen.getByLabelText('set-question'));
-    expect(screen.getByTestId('question')).toHaveTextContent('Hello?');
+    // Wrap in waitFor to ensure state update is reflected in DOM
+    await waitFor(() =>
+      expect(screen.getByTestId('question')).toHaveTextContent('Hello?')
+    );
   });
 
   test('ask with empty question sets validation error', async () => {
@@ -55,7 +58,9 @@ describe('QAContext', () => {
 
     // default question is empty, calling ask should error
     fireEvent.click(screen.getByLabelText('ask'));
-    expect(await screen.findByTestId('error')).toHaveTextContent('Please enter a question.');
+    await waitFor(() =>
+      expect(screen.getByTestId('error')).toHaveTextContent('Please enter a question.')
+    );
     expect(screen.getByTestId('loading')).toHaveTextContent('false');
   });
 
@@ -74,12 +79,12 @@ describe('QAContext', () => {
     await waitFor(() => expect(askQuestionAPI).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(screen.getByTestId('answer')).toHaveTextContent('Answer A'));
 
-    // history updated
-    expect(screen.getByTestId('history-count')).toHaveTextContent('1');
+    // history updated (wrap to allow reducer commit)
+    await waitFor(() => expect(screen.getByTestId('history-count')).toHaveTextContent('1'));
     // lastAnswerId should be populated (non-empty string)
-    expect(screen.getByTestId('last-answer-id').textContent).not.toBe('');
+    await waitFor(() => expect(screen.getByTestId('last-answer-id').textContent).not.toBe(''));
     // error cleared
-    expect(screen.getByTestId('error')).toHaveTextContent('');
+    await waitFor(() => expect(screen.getByTestId('error')).toHaveTextContent(''));
   });
 
   test('ask error populates error field and stops loading', async () => {
@@ -91,7 +96,9 @@ describe('QAContext', () => {
     fireEvent.click(screen.getByLabelText('ask'));
 
     await waitFor(() => expect(askQuestionAPI).toHaveBeenCalledTimes(1));
-    expect(await screen.findByTestId('error')).toHaveTextContent('Network down');
+    await waitFor(() =>
+      expect(screen.getByTestId('error')).toHaveTextContent('Network down')
+    );
     expect(screen.getByTestId('loading')).toHaveTextContent('false');
   });
 
@@ -111,8 +118,12 @@ describe('QAContext', () => {
     fireEvent.click(screen.getByLabelText('select-first'));
 
     // Picking should keep same values since we selected first item which matches
-    expect(screen.getByTestId('question').textContent).toBe(prevQuestion);
-    expect(screen.getByTestId('answer')).toHaveTextContent('History Answer');
+    await waitFor(() =>
+      expect(screen.getByTestId('question').textContent).toBe(prevQuestion)
+    );
+    await waitFor(() =>
+      expect(screen.getByTestId('answer')).toHaveTextContent('History Answer')
+    );
   });
 
   test('clearHistory empties the history array', async () => {
@@ -125,7 +136,7 @@ describe('QAContext', () => {
     await waitFor(() => expect(screen.getByTestId('history-count')).toHaveTextContent('1'));
 
     fireEvent.click(screen.getByLabelText('clear-history'));
-    expect(screen.getByTestId('history-count')).toHaveTextContent('0');
+    await waitFor(() => expect(screen.getByTestId('history-count')).toHaveTextContent('0'));
   });
 
   test('dismissError clears error', async () => {
@@ -136,10 +147,12 @@ describe('QAContext', () => {
 
     fireEvent.click(screen.getByLabelText('set-question'));
     fireEvent.click(screen.getByLabelText('ask'));
-    expect(await screen.findByTestId('error')).toHaveTextContent('Boom');
+    await waitFor(() =>
+      expect(screen.getByTestId('error')).toHaveTextContent('Boom')
+    );
 
     fireEvent.click(screen.getByLabelText('dismiss-error'));
-    expect(screen.getByTestId('error')).toHaveTextContent('');
+    await waitFor(() => expect(screen.getByTestId('error')).toHaveTextContent(''));
   });
 
   test('sendFeedback success sets thanks status, error path sets error status', async () => {
@@ -156,12 +169,16 @@ describe('QAContext', () => {
     // happy path
     fireEvent.click(screen.getByLabelText('feedback-up'));
     await waitFor(() => expect(sendFeedbackAPI).toHaveBeenCalledTimes(1));
-    expect(screen.getByTestId('feedback-status')).toHaveTextContent('thanks');
+    await waitFor(() =>
+      expect(screen.getByTestId('feedback-status')).toHaveTextContent('thanks')
+    );
 
     // error path
     sendFeedbackAPI.mockRejectedValueOnce(new Error('fail'));
     fireEvent.click(screen.getByLabelText('feedback-down'));
     await waitFor(() => expect(sendFeedbackAPI).toHaveBeenCalledTimes(2));
-    expect(screen.getByTestId('feedback-status')).toHaveTextContent('error');
+    await waitFor(() =>
+      expect(screen.getByTestId('feedback-status')).toHaveTextContent('error')
+    );
   });
 });

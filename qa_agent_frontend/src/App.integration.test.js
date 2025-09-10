@@ -32,7 +32,10 @@ describe('App integration flows', () => {
     expect(up).toBeEnabled();
     fireEvent.click(up);
     await waitFor(() => expect(sendFeedbackAPI).toHaveBeenCalledTimes(1));
-    expect(screen.getByText(/thanks for the feedback/i)).toBeInTheDocument();
+    // Wait for UI to reflect feedback success message
+    await waitFor(() =>
+      expect(screen.getByText(/thanks for the feedback/i)).toBeInTheDocument()
+    );
   });
 
   test('error path shows notification and can dismiss', async () => {
@@ -44,6 +47,7 @@ describe('App integration flows', () => {
     fireEvent.change(input, { target: { value: 'Will error' } });
     fireEvent.click(screen.getByRole('button', { name: /ask/i }));
 
+    // Wrap alert assertion to ensure UI update
     const alert = await screen.findByRole('alert');
     expect(alert).toHaveTextContent('Server unhappy');
 
