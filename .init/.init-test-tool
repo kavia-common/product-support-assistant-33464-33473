@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/product-support-assistant-33464-33473/qa_agent_frontend"
+}
