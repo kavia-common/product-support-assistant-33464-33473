@@ -1,82 +1,41 @@
-# Lightweight React Template for KAVIA
+# Product Support Q&A Frontend (React)
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+Modern, minimalistic single-page app for a product support assistant. Users can ask natural language questions and see concise answers, with a history panel, error notifications, and optional feedback.
 
 ## Features
+- User input for natural language questions
+- Concise answer rendering
+- Query history side panel with clear option
+- Error notification system with dismiss
+- Optional feedback (thumbs up/down)
+- Light, clean design using the specified color scheme:
+  - Primary: `#62abf4`
+  - Secondary: `#424242`
+  - Accent: `#ffb300`
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+## Quick Start
+- `npm start` – start dev server (http://localhost:3000)
+- `npm test` – run tests
+- `npm run build` – production build
 
-## Getting Started
+## Environment
+Create a `.env` using `.env.example` if integrating with a backend:
+- `REACT_APP_API_BASE_URL` – Base URL for backend Q&A API (no trailing slash)
 
-In the project directory, you can run:
+By default, this app uses simulated API calls in `src/utils/api.js`. Replace those with `fetch` calls to your backend when available.
 
-### `npm start`
+## Structure
+- `src/App.js` – root layout and composition
+- `src/App.css` – theme and component styles
+- `src/context/QAContext.js` – centralized state and actions (ask, history, feedback)
+- `src/components/*` – Header, Sidebar, QuestionInput, AnswerDisplay, Notification, Feedback
+- `src/utils/api.js` – API utilities (currently simulated)
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Accessibility
+- Keyboard submit (Enter)
+- Alert role for error notifications
+- Button labels and titles for clarity
 
-### `npm test`
-
-Launches the test runner in interactive watch mode.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-## Customization
-
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
-```
-
-### Components
-
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
-
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
-
-## Learn More
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Notes
+- Keep answers concise; long text is preserved with `pre-wrap`.
+- History is local to the session and capped at 30 entries.

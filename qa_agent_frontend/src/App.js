@@ -1,48 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { QAProvider } from './context/QAContext';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import QuestionInput from './components/QuestionInput';
+import AnswerDisplay from './components/AnswerDisplay';
+import Notification from './components/Notification';
+import Feedback from './components/Feedback';
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * App: Root SPA for Product Support Q&A assistant.
+ * Layout: header, main content with question input and answer display, side panel with history and feedback.
+ * Uses QAProvider for shared state and API interactions.
+ */
 function App() {
-  const [theme, setTheme] = useState('light');
-
-  // Effect to apply theme to document element
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  // PUBLIC_INTERFACE
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <button 
-          className="theme-toggle" 
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-        </button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          Current theme: <strong>{theme}</strong>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QAProvider>
+      <div className="app-shell">
+        <Header />
+        <div className="content">
+          <aside className="sidebar">
+            <Sidebar />
+          </aside>
+          <main className="main">
+            <Notification />
+            <QuestionInput />
+            <AnswerDisplay />
+            <Feedback />
+          </main>
+        </div>
+      </div>
+    </QAProvider>
   );
 }
 
