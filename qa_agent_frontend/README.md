@@ -2,6 +2,12 @@
 
 Modern, minimalistic single-page app for a product support assistant. Users can ask natural language questions and see concise answers, with a history panel, error notifications, and optional feedback.
 
+## Production build and proxy/sub-path hosting
+- Run: `npm run build` to generate `build/`.
+- This project sets `"homepage": "."` in package.json so Create React App emits relative asset URLs. This ensures `/proxy/<port>/` or other sub-path reverse proxies load assets like `static/js/main.*.js` correctly.
+- To serve locally: `npx serve -s build` (or any static server).
+- For cloud IDEs that mount at `/proxy/3002/`, serve the `build/` folder and ensure the server responds to the sub-path. Relative assets will work without additional changes.
+
 ## Features
 - User input for natural language questions
 - Concise answer rendering
